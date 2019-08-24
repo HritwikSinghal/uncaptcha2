@@ -3,6 +3,9 @@ import pyautogui
 import speech_recognition as sr
 import os
 import subprocess
+
+import webbrowser
+
 from queryAPI import bing, google, ibm
 
 ''' You'll need to update based on the coordinates of your setup '''
@@ -47,12 +50,14 @@ def waitFor(coords, color):
 def downloadCaptcha():
 	''' Navigate to demo site, input user info, and download a captcha. '''
 	print("Opening Firefox")
-	pyautogui.moveTo(FIREFOX_ICON_COORDS)
-	pyautogui.rightClick()
-	time.sleep(.3)
-	pyautogui.moveTo(PRIVATE_COORDS)
-	pyautogui.click()
-	time.sleep(.5)
+	webbrowser.get('firefox').open_new_tab('https://www.google.com')
+	pyautogui.hotkey('ctrl', 'shift', 'p')
+	# pyautogui.moveTo(FIREFOX_ICON_COORDS)
+	# pyautogui.rightClick()
+	# time.sleep(.3)
+	# pyautogui.moveTo(PRIVATE_COORDS)
+	# pyautogui.click()
+	# time.sleep(.5)
 	if waitFor(PRIVATE_BROWSER, PRIVATE_COLOR) == -1: # Wait for browser to load
 		return -1
 	
