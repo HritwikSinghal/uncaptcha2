@@ -11,12 +11,12 @@ from queryAPI import bing, google, ibm
 ''' You'll need to update based on the coordinates of your setup '''
 FIREFOX_ICON_COORDS = (25, 	 67) # Location of the Firefox icon on the side toolbar (to left click)
 PRIVATE_COORDS		= (178,  69) # Location of "Open a new Private Window"
-PRIVATE_BROWSER 	= (800, 443) # A place where the background of the Private Window will be
+PRIVATE_BROWSER 	= (245, 745) # A place where the background of the Private Window will be
 PRIVATE_COLOR		= '#25003E'  # The color of the background of the Private Window
-SEARCH_COORDS 		= (417, 142) # Location of the Firefox Search box
+SEARCH_COORDS 		= (342, 121) # Location of the Firefox Search box
 REFRESH_COORDS      = (181, 137) # Refresh button
-GOOGLE_LOCATION     = (117, 104) # Location of the Google Icon after navigating to google.com/recaptcha/api2/demo
-GOOGLE_COLOR 		= '#C3D8FC'  # Color of the Google Icon
+GOOGLE_LOCATION     = (17, 80) # Location of the Google Icon after navigating to google.com/recaptcha/api2/demo
+GOOGLE_COLOR 		= '#EA4335'  # Color of the Google Icon
 CAPTCHA_COORDS		= (154, 531) # Coordinates of the empty CAPTCHA checkbox
 CHECK_COORDS 		= (158, 542) # Location where the green checkmark will be
 CHECK_COLOR 		= '#35B178'  # Color of the green checkmark
@@ -40,8 +40,13 @@ def waitFor(coords, color):
 	''' Wait for a coordinate to become a certain color '''
 	pyautogui.moveTo(coords)
 	numWaitedFor = 0
-	while color != runCommand("eval $(xdotool getmouselocation --shell); xwd -root -silent | convert xwd:- -depth 8 -crop \"1x1+$X+$Y\" txt:- | grep -om1 '#\w\+'"):
-		time.sleep(.1)
+
+	test_color_rgb = pyautogui.screenshot().getpixel(coords)
+	test_color = '#{:02x}{:02x}{:02x}'.format(test_color_rgb[0], test_color_rgb[1], test_color_rgb[2])
+	while color.lower() != test_color.lower():
+		time.sleep(.5)
+		test_color_rgb = pyautogui.screenshot().getpixel(coords)
+		test_color = '#{:02x}{:02x}{:02x}'.format(test_color_rgb[0], test_color_rgb[1], test_color_rgb[2])
 		numWaitedFor += 1
 		if numWaitedFor > 25:
 			return -1
@@ -51,6 +56,7 @@ def downloadCaptcha():
 	''' Navigate to demo site, input user info, and download a captcha. '''
 	print("Opening Firefox")
 	webbrowser.get('firefox').open_new_tab('https://www.google.com')
+	time.sleep(1.5)
 	pyautogui.hotkey('ctrl', 'shift', 'p')
 	# pyautogui.moveTo(FIREFOX_ICON_COORDS)
 	# pyautogui.rightClick()
@@ -64,13 +70,15 @@ def downloadCaptcha():
 	print("Visiting Demo Site")
 	pyautogui.moveTo(SEARCH_COORDS)
 	pyautogui.click()
-	pyautogui.typewrite('https://www.google.com/recaptcha/api2/demo')
+	pyautogui.typewrite('https://www.google.com/recaptcha/api2/demo', interval=0.05)
 	pyautogui.press('enter')
 	time.sleep(.5)
 	# Check if the page is loaded...
 	pyautogui.moveTo(GOOGLE_LOCATION)
 	if waitFor(GOOGLE_LOCATION, GOOGLE_COLOR) == -1: # Waiting for site to load
 		return -1
+	print("Get recaptcha demo page")
+	exit(13)
 
 	print("Downloading Captcha")
 	pyautogui.moveTo(CAPTCHA_COORDS)
