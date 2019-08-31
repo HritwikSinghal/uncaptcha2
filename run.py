@@ -1,14 +1,18 @@
 # -*- coding: UTF-8 -*-
 
-import time
-import pyautogui
-import speech_recognition as sr
+# Standard library imports
 import os
 import subprocess
-
+import time
 import webbrowser
 
-from queryAPI import bing, google, ibm
+# Third party imports
+import pyautogui
+import speech_recognition as sr
+
+# Local application imports
+from pycomic_pkg import queryAPI
+# from queryAPI import bing, google, ibm
 
 ''' You'll need to update based on the coordinates of your setup (Home PC setup) '''
 # FIREFOX_ICON_COORDS = (25, 	 67) # Location of the Firefox icon on the side toolbar (to left click)
@@ -169,7 +173,7 @@ def runCap():
             audio = r.record(source)
 
         print("Submitting To Speech to Text:")
-        determined = google(audio) # Instead of google, you can use ibm or bing here
+        determined = queryAPI.google(audio) # Instead of google, you can use ibm or bing here
         print(determined)
 
         print("Inputting Answer")
