@@ -79,5 +79,5 @@ case ${SYSTEM_RELEASE} in
 esac
 
 
-echo "pycomic setup success."
+echo "uncaptcha2 setup success."
 exit 0
