@@ -11,7 +11,7 @@ import pyautogui
 import speech_recognition as sr
 
 # Local application imports
-from pycomic_pkg import queryAPI
+from uncaptcha_pkg import queryAPI
 # from queryAPI import bing, google, ibm
 
 ''' You'll need to update based on the coordinates of your setup (Home PC setup) '''
