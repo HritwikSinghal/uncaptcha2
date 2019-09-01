@@ -1,5 +1,9 @@
 # -*- coding: UTF-8 -*-
 
+# Exit status:
+#   11 - config.ConfigNotFoundError
+#   12 - config.OptionFormatError
+
 # Standard library imports
 import os
 import subprocess
@@ -12,6 +16,7 @@ import speech_recognition as sr
 
 # Local application imports
 from uncaptcha_pkg import queryAPI
+from uncaptcha_pkg import config
 # from queryAPI import bing, google, ibm
 
 ''' You'll need to update based on the coordinates of your setup (Home PC setup) '''
@@ -58,6 +63,7 @@ DOWNLOAD_LOCATION = "/home/haw/Downloads/"
 
 r = sr.Recognizer()
 
+
 def runCommand(command):
     ''' Run a command and get back its output '''
     proc = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
@@ -80,6 +86,8 @@ def waitFor(coords, color):
     return 0
 
 def downloadCaptcha():
+
+
     ''' Navigate to demo site, input user info, and download a captcha. '''
     print("Opening Firefox")
     webbrowser.get('firefox').open_new_tab('https://www.google.com')
@@ -199,6 +207,20 @@ def runCap():
 
 
 if __name__ == '__main__':
+    
+    # TODO: test for all config data
+    try:
+        config_data = config.Config(['uncaptcha_conf.ini'])
+    except config.ConfigNotFoundError as error:
+        print(error)
+        exit(11)
+
+    try:
+        config_data.validate()
+    except config.OptionFormatError as error:
+        print(error)
+        exit(12)
+
     success = 0
     fail = 0
     allowed = 0

@@ -2,6 +2,8 @@
 
 # Standard library imports
 import configparser
+import os
+import re
 
 class Config():
 
@@ -25,16 +27,16 @@ class Config():
         # Keys
         self.DOWNLOAD_LOCATION = 'download-location'
 
-        self.PRIVATE_BROWSER = 'private-browser'
+        self.PRIVATE_BROWSER_COORDS = 'private-browser'
         self.SEARCH_COORDS = 'search-coords'
-        self.GOOGLE_LOCATION = 'google-location'
+        self.GOOGLE_COORDS = 'google-location'
         self.CAPTCHA_COORDS = 'captcha-coords'
         self.CHECK_COORDS = 'check-coords'
         self.AUDIO_COORDS = 'audio-coords'
         self.DOWNLOAD_COORDS = 'download-coords'
         self.FINAL_COORDS = 'final-coords'
         self.VERIFY_COORDS = 'verify-coords'
-        self.CLOSE_LOCATION = 'close-location'
+        self.CLOSE_COORDS = 'close-location'
 
         self.PRIVATE_COLOR = 'private-color'
         self.GOOGLE_COLOR = 'google-color'
@@ -55,11 +57,11 @@ class Config():
         """
         return self._read_value(self.FILE_SEC, self.DOWNLOAD_LOCATION)
 
-    def private_browser(self):
+    def private_browser_coords(self):
         """
-        Return config PRIVATE_BROWSER option in CURSOR section
+        Return config PRIVATE_BROWSER_COORDS option in CURSOR section
         """
-        return self._read_value(self.CURSOR_SEC, self.PRIVATE_BROWSER)
+        return self._read_value(self.CURSOR_SEC, self.PRIVATE_BROWSER_COORDS)
 
     def search_coords(self):
         """
@@ -67,11 +69,11 @@ class Config():
         """
         return self._read_value(self.CURSOR_SEC, self.SEARCH_COORDS)
 
-    def google_location(self):
+    def google_coords(self):
         """
-        Return config GOOGLE_LOCATION option in CURSOR section
+        Return config GOOGLE_COORDS option in CURSOR section
         """
-        return self._read_value(self.CURSOR_SEC, self.GOOGLE_LOCATION)
+        return self._read_value(self.CURSOR_SEC, self.GOOGLE_COORDS)
 
     def captcha_coords(self):
         """
@@ -109,11 +111,11 @@ class Config():
         """
         return self._read_value(self.CURSOR_SEC, self.VERIFY_COORDS)
 
-    def close_location(self):
+    def close_coords(self):
         """
-        Return config CLOSE_LOCATION option in CURSOR section
+        Return config CLOSE_COORDS option in CURSOR section
         """
-        return self._read_value(self.CURSOR_SEC, self.CLOSE_LOCATION)
+        return self._read_value(self.CURSOR_SEC, self.CLOSE_COORDS)
 
     def private_color(self):
         """
@@ -132,6 +134,35 @@ class Config():
         Return config CHECK_COLOR option in COLOR section
         """
         return self._read_value(self.COLOR_SEC, self.CHECK_COLOR)
+
+
+    def validate(self):
+        """
+        Test to make sure there is value for all options
+        """
+        _re_coord_pattern = re.compile(r'^\([0-9]*,\s*[0-9]*\)')
+        _re_color_pattern = re.compile(r'#[0-9a-fA-F]{6}')
+
+        _download_location = self.download_location()
+        _search_coords = self.search_coords()
+
+        if not os.path.isdir(self.download_location()):
+            raise OptionFormatError('{} not exist'. format(self.DOWNLOAD_LOCATION))
+            
+        self._regex_test(_re_coord_pattern, self.private_browser_coords(), self.PRIVATE_BROWSER_COORDS)
+        self._regex_test(_re_coord_pattern, self.search_coords(), self.SEARCH_COORDS)
+        self._regex_test(_re_coord_pattern, self.google_coords(), self.GOOGLE_COORDS)
+        self._regex_test(_re_coord_pattern, self.captcha_coords(), self.CAPTCHA_COORDS)
+        self._regex_test(_re_coord_pattern, self.check_coords(), self.CHECK_COORDS)
+        self._regex_test(_re_coord_pattern, self.audio_coords(), self.AUDIO_COORDS)
+        self._regex_test(_re_coord_pattern, self.download_coords(), self.DOWNLOAD_COORDS)
+        self._regex_test(_re_coord_pattern, self.final_coords(), self.FINAL_COORDS)
+        self._regex_test(_re_coord_pattern, self.verify_coords(), self.VERIFY_COORDS)
+        self._regex_test(_re_coord_pattern, self.close_coords(), self.CLOSE_COORDS)
+
+        self._regex_test(_re_color_pattern, self.private_color(), self.PRIVATE_COLOR)
+        self._regex_test(_re_color_pattern, self.google_color(), self.GOOGLE_COLOR)
+        self._regex_test(_re_color_pattern, self.check_color(), self.CHECK_COLOR)
 
     
     def _read_value(self, section, key):
@@ -154,6 +185,17 @@ class Config():
             raise NoOptionError(error)
         else:
             return _config_value
+
+    def _regex_test(self, pattern , value, key):
+        """
+        Test regex matching
+        Input:
+            pattern: regular expression object
+            value: string - config option value
+            key: string - config option key
+        """
+        if pattern.fullmatch(value) == None:
+            raise OptionFormatError('{} wrong format: {}'.format(key, value))
 
 
 
@@ -179,4 +221,10 @@ class NoSectionError(configError):
 class NoOptionError(configError):
     """
     Raised by configparser.NoOptionError
+    """
+    pass
+
+class OptionFormatError(configError):
+    """
+    Raised if option is in wrong format
     """
