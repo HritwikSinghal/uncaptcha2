@@ -27,16 +27,16 @@ class Config():
         # Keys
         self.DOWNLOAD_LOCATION = 'download-location'
 
-        self.PRIVATE_BROWSER_COORDS = 'private-browser'
+        self.PRIVATE_BROWSER_COORDS = 'private-browser-coords'
         self.SEARCH_COORDS = 'search-coords'
-        self.GOOGLE_COORDS = 'google-location'
+        self.GOOGLE_COORDS = 'google-coords'
         self.CAPTCHA_COORDS = 'captcha-coords'
         self.CHECK_COORDS = 'check-coords'
         self.AUDIO_COORDS = 'audio-coords'
         self.DOWNLOAD_COORDS = 'download-coords'
         self.FINAL_COORDS = 'final-coords'
         self.VERIFY_COORDS = 'verify-coords'
-        self.CLOSE_COORDS = 'close-location'
+        self.CLOSE_COORDS = 'close-coords'
 
         self.PRIVATE_COLOR = 'private-color'
         self.GOOGLE_COLOR = 'google-color'
