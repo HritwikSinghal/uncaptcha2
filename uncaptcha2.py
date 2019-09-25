@@ -61,15 +61,15 @@ from uncaptcha_pkg import uncaptcha_conf
 r = sr.Recognizer()
 
 
-def runCommand(command):
+def run_command(command):
     ''' Run a command and get back its output '''
     proc = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
     return proc.communicate()[0].split()[0]
 
-def waitFor(coords, color):
+def wait_for(coords, color):
     ''' Wait for a coordinate to become a certain color '''
     pyautogui.moveTo(coords)
-    numWaitedFor = 0
+    num_waited_for = 0
 
     test_color_rgb = pyautogui.screenshot().getpixel(coords)
     test_color = '#{:02x}{:02x}{:02x}'.format(test_color_rgb[0], test_color_rgb[1], test_color_rgb[2])
@@ -77,14 +77,14 @@ def waitFor(coords, color):
         time.sleep(.5)
         test_color_rgb = pyautogui.screenshot().getpixel(coords)
         test_color = '#{:02x}{:02x}{:02x}'.format(test_color_rgb[0], test_color_rgb[1], test_color_rgb[2])
-        numWaitedFor += 1
-        if numWaitedFor > 25:
+        num_waited_for += 1
+        if num_waited_for > 25:
             return -1
     return 0
 
-def downloadCaptcha(config):
+def download_captcha(config):
     ''' Navigate to demo site, input user info, and download a captcha. '''
-    print("Opening Firefox")
+    print("Opening Firefox...")
     webbrowser.get('firefox').open_new_tab('https://www.google.com')
     time.sleep(1.5)
     pyautogui.hotkey('ctrl', 'shift', 'p')
@@ -95,11 +95,11 @@ def downloadCaptcha(config):
     # pyautogui.click()
     # time.sleep(.5)
 
-    # if waitFor(PRIVATE_BROWSER, PRIVATE_COLOR) == -1: # Wait for browser to load
-    if waitFor(config.private_browser_coords(), config.private_color()) == -1: # Wait for browser to load
+    # if wait_for(PRIVATE_BROWSER, PRIVATE_COLOR) == -1: # Wait for browser to load
+    if wait_for(config.private_browser_coords(), config.private_color()) == -1: # Wait for browser to load
         return -1
     
-    print("Visiting Demo Site")
+    print("Visiting Demo Site...")
     # pyautogui.moveTo(SEARCH_COORDS)
     pyautogui.moveTo(config.search_coords())
     pyautogui.click()
@@ -109,18 +109,18 @@ def downloadCaptcha(config):
     # Check if the page is loaded...
     # pyautogui.moveTo(GOOGLE_LOCATION)
     pyautogui.moveTo(config.google_coords())
-    # if waitFor(GOOGLE_LOCATION, GOOGLE_COLOR) == -1: # Waiting for site to load
-    if waitFor(config.google_coords(), config.google_color()) == -1: # Waiting for site to load
+    # if wait_for(GOOGLE_LOCATION, GOOGLE_COLOR) == -1: # Waiting for site to load
+    if wait_for(config.google_coords(), config.google_color()) == -1: # Waiting for site to load
         return -1
     print("Get recaptcha demo page")
 
-    print("Downloading Captcha")
+    print("Downloading Captcha...")
     # pyautogui.moveTo(CAPTCHA_COORDS)
     pyautogui.moveTo(config.captcha_coords())
     pyautogui.click()
     time.sleep(5)
     # pyautogui.moveTo(CHECK_COORDS)
-    # if CHECK_COLOR in runCommand("eval $(xdotool getmouselocation --shell); xwd -root -silent | convert xwd:- -depth 8 -crop \"1x1+$X+$Y\" txt:- | grep -om1 '#\w\+'"):
+    # if CHECK_COLOR in run_command("eval $(xdotool getmouselocation --shell); xwd -root -silent | convert xwd:- -depth 8 -crop \"1x1+$X+$Y\" txt:- | grep -om1 '#\w\+'"):
     # test_color_rgb = pyautogui.screenshot().getpixel(CHECK_COORDS)
     test_color_rgb = pyautogui.screenshot().getpixel(config.check_coords())
     test_color = '#{:02x}{:02x}{:02x}'.format(test_color_rgb[0], test_color_rgb[1], test_color_rgb[2])
@@ -145,7 +145,7 @@ def downloadCaptcha(config):
 
     return 0
 
-def checkCaptcha(config):
+def check_captcha(config):
     ''' Check if we've completed the captcha successfully. '''
     # pyautogui.moveTo(CHECK_COORDS)
     pyautogui.moveTo(config.check_coords())
@@ -154,7 +154,7 @@ def checkCaptcha(config):
     test_color = '#{:02x}{:02x}{:02x}'.format(test_color_rgb[0], test_color_rgb[1], test_color_rgb[2])
     # if CHECK_COLOR.lower() == test_color.lower(): 
     if config.check_color().lower() == test_color.lower(): 
-    # if CHECK_COLOR in runCommand("eval $(xdotool getmouselocation --shell); xwd -root -silent | convert xwd:- -depth 8 -crop \"1x1+$X+$Y\" txt:- | grep -om1 '#\w\+'"):
+    # if CHECK_COLOR in run_command("eval $(xdotool getmouselocation --shell); xwd -root -silent | convert xwd:- -depth 8 -crop \"1x1+$X+$Y\" txt:- | grep -om1 '#\w\+'"):
         print ("Successfully completed captcha.")
         output = 1
     else:
@@ -165,7 +165,7 @@ def checkCaptcha(config):
     pyautogui.click()
     return output
 
-def runCap(config):
+def run_cap(config):
     download_dir = config.download_location()
 
     try:
@@ -175,13 +175,13 @@ def runCap(config):
         # os.system('rm ' + DOWNLOAD_LOCATION + 'audio.mp3 2>/dev/null')
         os.system('rm ' + download_dir + '/audio.mp3 2>/dev/null')
         # First, download the file
-        downloadResult = downloadCaptcha(config)
-        if downloadResult == 2:
+        download_result = download_captcha(config)
+        if download_result == 2:
             # pyautogui.moveTo(CLOSE_LOCATION)
             pyautogui.moveTo(config.close_coords())
             pyautogui.click()
             return 2
-        elif downloadResult == -1:
+        elif download_result == -1:
             # pyautogui.moveTo(CLOSE_LOCATION)
             pyautogui.moveTo(config.close_coords())
             pyautogui.click()
@@ -194,17 +194,17 @@ def runCap(config):
         os.system("echo 'y' | ffmpeg -i " + download_dir + "/audio.mp3 " + download_dir + "/audio.wav 2>/dev/null")
         print('Reading audio file...')
         # with sr.AudioFile(DOWNLOAD_LOCATION + 'audio.wav') as source:
-        with sr.AudioFile(download_dir + 'audio.wav') as source:
+        with sr.AudioFile(download_dir + '/audio.wav') as source:
             audio = r.record(source)
 
         print("Submitting To Speech to Text:")
         determined = queryAPI.google(audio) # Instead of google, you can use ibm or bing here
         print(determined)
 
-        print("Inputting Answer")
+        print("Inputting Answer...")
         # Input the captcha 
         # pyautogui.moveTo(FINAL_COORDS)
-        pyautogui.moveTo(config.filnal_coords())
+        pyautogui.moveTo(config.final_coords())
         pyautogui.click()
         time.sleep(.5)
         pyautogui.typewrite(determined, interval=.03)
@@ -213,10 +213,10 @@ def runCap(config):
         pyautogui.moveTo(config.verify_coords())
         pyautogui.click()
 
-        print("Verifying Answer")
+        print("Verifying Answer...")
         time.sleep(2)
         # Check that the captcha is completed
-        result = checkCaptcha(config)
+        result = check_captcha(config)
         return result
     except Exception as e:
         print(e)
@@ -248,7 +248,7 @@ if __name__ == '__main__':
     # Run this forever and print statistics
     # while True:
     for _count in range(1):
-        res = runCap(config_data)
+        res = run_cap(config_data)
         if res == 1:
             success += 1
         elif res == 2: # Sometimes google just lets us in
