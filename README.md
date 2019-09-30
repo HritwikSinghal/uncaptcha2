@@ -11,6 +11,8 @@ unCaptcha2's approach is very simple:
 5. Parse response and type answer
 6. Press submit and check if successful
 
+## Version 0.1.2
+
 ## Setup
 Run `setup.sh` script for installtion  
 `DESTINATION` is the directory for programs to be
@@ -46,8 +48,15 @@ Settings in `queryAPI.py` file
 ## Disclaimer
 This repo is forked from [ecthros/uncaptcha2](https://github.com/ecthros/uncaptcha2) repository
 
-**Contributor**
-- [Kkevsterrr](https://github.com/Kkevsterrr)
-- [Dave Levin](https://cs.umd.edu/~dml)
-- [dpatel19](https://github.com/dpatel19)
+
+## Version notes
+**v0.1.2**
+- Replace `os.system` usage with `subprocess` module
+- Pre-check `ffmpeg` shell command
+
+**v0.1.1**
+- Close firefox browser window after each run
+- Isolate configuration file
+- Change naming convention style: Guido's recommendation
+
 
