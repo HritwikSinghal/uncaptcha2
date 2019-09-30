@@ -3,6 +3,7 @@
 # Exit status:
 #   11 - config.ConfigNotFoundError
 #   12 - config.OptionFormatError
+#   13 - shell command not found
 
 # Standard library imports
 import os
@@ -228,7 +229,7 @@ def run_cap(config):
 
 if __name__ == '__main__':
     
-    # TODO: test for all config data
+    # Test all config data
     try:
         config_data = uncaptcha_conf.Config(['uncaptcha_config.ini'])
     except uncaptcha_conf.ConfigNotFoundError as error:
@@ -241,12 +242,18 @@ if __name__ == '__main__':
         print(error.message)
         exit(12)
 
+    # Test script command
+    ffmpeg_process = subprocess.Popen(['which', 'ffmpeg'], stdout=subprocess.PIPE)
+    ffmpeg_process.poll()
+    if ffmpeg_process.returncode:
+        print('No ffmpeg shell command found, please install before execute program')
+        exit(13)
+
+    # Run this and print statistics
     success = 0
     fail = 0
     allowed = 0
 
-    # Run this forever and print statistics
-    # while True:
     for _count in range(1):
         res = run_cap(config_data)
         if res == 1:
