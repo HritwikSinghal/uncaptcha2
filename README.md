@@ -60,3 +60,16 @@ This repo is forked from [ecthros/uncaptcha2](https://github.com/ecthros/uncaptc
 - Change naming convention style: Guido's recommendation
 
 
+## Temp notes
+Linux running `pyautogui`
+```
+sudo apt-get install python3-tk python3-dev
+```
+Linux using `pyautogui screenshot` function
+```
+sudo apt-get install scrot
+```
+
+Firefox disable fullscreen auto hide
+1. go to `about:config`
+1. modify `browser.fullscreen.autohide` >> `false` 
