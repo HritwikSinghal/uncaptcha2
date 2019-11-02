@@ -47,7 +47,9 @@ function Installation() {
     cp requirements.txt ${DESTDIR}
     checkCode 11 "Copy requirements.txt failed." &> /dev/null
     cp -r uncaptcha_pkg ${DESTDIR}
-    checkCode 11 "Copy uncaptcha_pkg directory failed."   &> /dev/null
+    checkCode 11 "Copy uncaptcha_pkg directory failed." &> /dev/null
+    cp -r uncaptcha_lib ${DESTDIR}
+    checkCode 11 "Copy uncaptcha_lib directory failed" &> /dev/null
 }
 
 

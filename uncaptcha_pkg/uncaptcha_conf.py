@@ -21,18 +21,27 @@ class Config():
 
         # Sections 
         self.FILE_SEC = 'FILE'
+        self.IMAGE_SEC = 'IMAGE'
         self.CURSOR_SEC = 'CURSOR'
         self.COLOR_SEC = 'COLOR'
 
         # Keys
         self.DOWNLOAD_LOCATION = 'download-location'
 
+        self.PRIVATE_BROWSER_IMG = 'private-browser-img'
+        self.TAB_LOGO_IMG = 'tab-logo-img'
+        self.RECAPTCHA_IMG = 'recaptcha-img'
+        self.AUDIO_BUTTON_IMG = 'audio-button-img'
+        self.DOWNLOAD_BUTTON_IMG = 'download-button-img'
+        self.INSERT_ANS_IMG = 'insert-ans-img'
+        self.VERIFY_BUTTON_IMG = 'verify-button-img'
+        self.VERIFY_CHECK_IMG = 'verify-check-img'
+
         self.PRIVATE_BROWSER_COORDS = 'private-browser-coords'
         self.SEARCH_COORDS = 'search-coords'
         self.GOOGLE_COORDS = 'google-coords'
         self.CAPTCHA_COORDS = 'captcha-coords'
         self.CHECK_COORDS = 'check-coords'
-        self.AUDIO_COORDS = 'audio-coords'
         self.DOWNLOAD_COORDS = 'download-coords'
         self.FINAL_COORDS = 'final-coords'
         self.VERIFY_COORDS = 'verify-coords'
@@ -43,8 +52,9 @@ class Config():
         self.CHECK_COLOR = 'check-color'
 
         # Get config information
+        self.candidates = candidates
         self._config = configparser.ConfigParser()
-        self._config_found = self._config.read(candidates)
+        self._config_found = self._config.read(self.candidates)
 
         # Make sure ini file exist
         if len(self._config_found) == 0:
@@ -57,6 +67,50 @@ class Config():
         """
         return self._read_value(self.FILE_SEC, self.DOWNLOAD_LOCATION)
 
+    # IMAGE section
+    def private_browser_img(self):
+        """
+        Return config PRIVATE_BROWSER_IMG option in IMAGE section
+        """
+        return self._read_value(self.IMAGE_SEC, self.PRIVATE_BROWSER_IMG)
+
+    def tab_logo_img(self):
+        """
+        Return config TAB_LOGO_IMG option in IMAGE section
+        """
+        return self._read_value(self.IMAGE_SEC, self.TAB_LOGO_IMG)
+
+    def recaptcha_img(self):
+        """
+        Return config RECAPTCHA_IMG option in IMAGE section
+        """
+        return self._read_value(self.IMAGE_SEC, self.RECAPTCHA_IMG)
+
+    def download_button_img(self):
+        """
+        Return config DOWNLOAD_BUTTON_IMG option in IMAGE section
+        """
+        return self._read_value(self.IMAGE_SEC, self.DOWNLOAD_BUTTON_IMG)
+
+    def insert_ans_img(self):
+        """
+        Return config INSERT_ANS_IMG option in IMAGE section
+        """
+        return self._read_value(self.IMAGE_SEC, self.INSERT_ANS_IMG)
+
+    def verify_button_img(self):
+        """
+        Return config VERIFY_BUTTON_IMG option in IMAGE section
+        """
+        return self._read_value(self.IMAGE_SEC, self.VERIFY_BUTTON_IMG)
+
+    def verify_check_img(self):
+        """
+        Return config VERIFY_CHECK_IMG option in IMAGE section
+        """
+        return self._read_value(self.IMAGE_SEC, self.VERIFY_CHECK_IMG)
+
+    # CURSOR section
     def private_browser_coords(self):
         """
         Return config PRIVATE_BROWSER_COORDS option in CURSOR section
@@ -214,7 +268,6 @@ class Config():
         """
         coords_list = coords.split(',')
         return (int(coords_list[0]), int(coords_list[1]))
-        
 
     def _regex_test(self, pattern , value, key):
         """
