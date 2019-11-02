@@ -9,6 +9,7 @@
 #
 #   11 - Copy file failed
 #   13 - Change file permission failed
+#   15 - Make directory failed
 
 
 # ============================
@@ -49,7 +50,12 @@ function Installation() {
     cp -r uncaptcha_pkg ${DESTDIR}
     checkCode 11 "Copy uncaptcha_pkg directory failed." &> /dev/null
     cp -r uncaptcha_lib ${DESTDIR}
-    checkCode 11 "Copy uncaptcha_lib directory failed" &> /dev/null
+    checkCode 11 "Copy uncaptcha_lib directory failed." &> /dev/null
+
+    if [[ ! -d ${DESTDIR}/uncaptcha_lib/tmp ]]; then
+        mkdir ${DESTDIR}/uncaptcha_lib/tmp
+        checkCode 15 "Create directory uncaptcha_lib/tmp failed." &> /dev/null
+    fi
 }
 
 
